@@ -4,6 +4,12 @@ var HelloMessage = React.createClass({
     }
 });
 
+var Button = React.createClass({
+   render: function() {
+       return <button class="btn btn-default" onClick={this.props.onClick}>{this.props.children}</button>
+   }
+});
+
 var TextBox = React.createClass({
     getInitialState: function() {
         return { isEditing: false, text: this.props.label }
@@ -26,9 +32,9 @@ var TextBox = React.createClass({
                 <input type='text' ref='messageTextBox' disabled={!this.state.isEditing}/>
                 {
                     this.state.isEditing ?
-                        <input type='button' value='Update' onClick={this.update} />
+                        <Button onClick={this.update}>Update</Button>
                         :
-                        <input type='button' value='Edit' onClick={this.edit} />
+                        <Button onClick={this.edit}>Edit</Button>
                     }
             </div>
         );
