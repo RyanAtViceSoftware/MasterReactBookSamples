@@ -6,7 +6,13 @@ var HelloMessage = React.createClass({
 
 var Button = React.createClass({
    render: function() {
-       return <button class="btn btn-default" onClick={this.props.onClick}>{this.props.children}</button>
+       return <button onClick={this.props.onClick}>{this.props.children}</button>
+   }
+});
+
+var GlyphIcon = React.createClass({
+   render: function() {
+       return <span className={'glyphicon glyphicon-' + this.props.icon}></span>
    }
 });
 
@@ -32,9 +38,9 @@ var TextBox = React.createClass({
                 <input type='text' ref='messageTextBox' disabled={!this.state.isEditing}/>
                 {
                     this.state.isEditing ?
-                        <Button onClick={this.update}>Update</Button>
+                        <Button onClick={this.update}><GlyphIcon icon='ok'/> Update</Button>
                         :
-                        <Button onClick={this.edit}>Edit</Button>
+                        <Button onClick={this.edit}><GlyphIcon icon='pencil'/> Edit</Button>
                     }
             </div>
         );
