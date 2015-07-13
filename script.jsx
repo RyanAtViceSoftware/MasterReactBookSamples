@@ -1,75 +1,55 @@
-var HelloMessage = React.createClass({
-    render: function() {
-        return <h2>{this.props.message}</h2>;
-    }
-});
-
 var Button = React.createClass({
-   render: function() {
-       return <button onClick={this.props.onClick}>{this.props.children}</button>
-   }
+    render() {
+        return <button onClick={this.props.onClick}>{this.props.children}</button>
+    }
 });
 
 var GlyphIcon = React.createClass({
-   render: function() {
-       return <span className={'glyphicon glyphicon-' + this.props.icon}></span>
-   }
-});
-
-var TextBox = React.createClass({
-    getInitialState: function() {
-        return { isEditing: false, text: this.props.label }
-    },
-    update: function() {
-        this.setState(
-            {
-                text: this.refs.messageTextBox.getDOMNode().value,
-                isEditing: false
-            });
-        this.props.update();
-    },
-    edit: function() {
-        this.setState({ isEditing: true});
-    },
-    render: function() {
-        return (
-            <div>
-              {this.props.label}<br/>
-                <input type='text' ref='messageTextBox' disabled={!this.state.isEditing}/>
-                {
-                    this.state.isEditing ?
-                        <Button onClick={this.update}><GlyphIcon icon='ok'/> Update</Button>
-                        :
-                        <Button onClick={this.edit}><GlyphIcon icon='pencil'/> Edit</Button>
-                    }
-            </div>
-        );
+    render() {
+        return <span className={'glyphicon glyphicon-' + this.props.icon}></span>
     }
 });
 
+
 var HelloReact = React.createClass({
-    getInitialState: function () {
-        return { firstName: '', lastName: ''}
+    getDefaultProps() {
+        return {likes: 0};
     },
-    update: function () {
-        this.setState({
-            firstName:
-                this.refs.firstName.refs.messageTextBox.getDOMNode().value,
-            lastName:
-                this.refs.lastName.refs.messageTextBox.getDOMNode().value});
+    getInitialState() {
+        return {isIncreasing: false};
     },
-    render: function() {
+    componentWillReceiveProps(nextProps) {
+        this._logPropsAndState('componentWillReceiveProps()');
+        this.setState({isIncreasing: nextProps.likes > this.props.likes});
+    },
+    shouldComponentUpdate(nextProps, nextState) {
+        this._logPropsAndState('shouldComponentUpdate()');
+        return nextProps.likes >= 3;
+    },
+    componentDidUpdate(prevProps, prevState) {
+        console.log('=> componentDidUpdate() give an opportunity to execute code after react is finished updating the DOM.');
+    },
+    _logPropsAndState(callingFunction) {
+        console.log('=> ' + callingFunction);
+        console.log('this.props.likes: ' + this.props.likes);
+        console.log('this.state.isIncreasing: ' + this.state.isIncreasing);
+    },
+    like() {
+        this.setProps({likes: this.props.likes+1});
+    },
+    unlike() {
+        this.setProps({likes: this.props.likes-1});
+    },
+    render() {
         return (
             <div>
-                <HelloMessage
-                    message={'Hello ' + this.state.firstName + ' ' + this.state.lastName}>
-                </HelloMessage>
-                <TextBox label='First Name' ref='firstName'
-                    update={this.update}>
-                </TextBox>
-                <TextBox label='Last Name'  ref='lastName'
-                    update={this.update}>
-                </TextBox>
+                <Button onClick={this.like}><GlyphIcon icon='thumbs-up'/> Like</Button>
+                <Button onClick={this.unlike}><GlyphIcon icon='thumbs-down'/> Unlike</Button>
+                <br/>
+                Likes {this.props.likes}
+                <GlyphIcon
+                    icon={(this.state.isIncreasing)
+                            ? 'circle-arrow-up' : 'circle-arrow-down'}/>
             </div>
         );
     }
